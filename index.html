@@ -1,0 +1,2891 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/_0.js"></script>
+        <script src="data/_1.js"></script>
+        <script src="data/_2.js"></script>
+        <script src="data/_3.js"></script>
+        <script src="data/_4.js"></script>
+        <script src="data/_5.js"></script>
+        <script src="data/_6.js"></script>
+        <script src="data/_7.js"></script>
+        <script src="data/_8.js"></script>
+        <script src="data/_9.js"></script>
+        <script src="data/_10.js"></script>
+        <script src="data/_11.js"></script>
+        <script src="data/_12.js"></script>
+        <script src="data/_13.js"></script>
+        <script src="data/_14.js"></script>
+        <script src="data/_15.js"></script>
+        <script src="data/_16.js"></script>
+        <script src="data/_17.js"></script>
+        <script src="data/_18.js"></script>
+        <script src="data/_19.js"></script>
+        <script src="data/_20.js"></script>
+        <script src="data/_21.js"></script>
+        <script src="data/_22.js"></script>
+        <script src="data/_23.js"></script>
+        <script src="data/city_for_map_24.js"></script>
+        <script src="lib/proj4.js"></script>  
+        <script src="src/proj4leaflet.js"></script>
+        <script>
+        var crs = new L.Proj.CRS('ESRI:102025', '+proj=aea +lat_0=30 +lon_0=95 +lat_1=15 +lat_2=65 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +type=crs',
+        {
+            resolutions: [
+            32768,16384,8192, 4096, 2048, 1024
+            ],
+            origin: [0, 0]
+        })
+        var map = L.map('map', {crs:crs,
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[21.33015655783125,-179.49415005597558],[83.90523785762305,175.23290665670712]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop__0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__0_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__0');
+        map.getPane('pane__0').style.zIndex = 400;
+        map.getPane('pane__0').style['mix-blend-mode'] = 'normal';
+        var layer__0 = new L.geoJson(json__0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__0',
+            layerName: 'layer__0',
+            pane: 'pane__0',
+            onEachFeature: pop__0,
+            style: style__0_0,
+        });
+        bounds_group.addLayer(layer__0);
+        function pop__1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__1_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__1',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__1');
+        map.getPane('pane__1').style.zIndex = 401;
+        map.getPane('pane__1').style['mix-blend-mode'] = 'normal';
+        var layer__1 = new L.geoJson(json__1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__1',
+            layerName: 'layer__1',
+            pane: 'pane__1',
+            onEachFeature: pop__1,
+            style: style__1_0,
+        });
+        bounds_group.addLayer(layer__1);
+        function pop__2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__2_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__2');
+        map.getPane('pane__2').style.zIndex = 402;
+        map.getPane('pane__2').style['mix-blend-mode'] = 'normal';
+        var layer__2 = new L.geoJson(json__2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__2',
+            layerName: 'layer__2',
+            pane: 'pane__2',
+            onEachFeature: pop__2,
+            style: style__2_0,
+        });
+        bounds_group.addLayer(layer__2);
+        function pop__3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__3_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__3',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__3');
+        map.getPane('pane__3').style.zIndex = 403;
+        map.getPane('pane__3').style['mix-blend-mode'] = 'normal';
+        var layer__3 = new L.geoJson(json__3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__3',
+            layerName: 'layer__3',
+            pane: 'pane__3',
+            onEachFeature: pop__3,
+            style: style__3_0,
+        });
+        bounds_group.addLayer(layer__3);
+        function pop__4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__4_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__4',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__4');
+        map.getPane('pane__4').style.zIndex = 404;
+        map.getPane('pane__4').style['mix-blend-mode'] = 'normal';
+        var layer__4 = new L.geoJson(json__4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__4',
+            layerName: 'layer__4',
+            pane: 'pane__4',
+            onEachFeature: pop__4,
+            style: style__4_0,
+        });
+        bounds_group.addLayer(layer__4);
+        function pop__5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['image'] !== null ? autolinker.link(feature.properties['image'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count_new_mar_count'] !== null ? autolinker.link(feature.properties['count_new_mar_count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__5_0(feature) {
+            switch(String(feature.properties['image'])) {
+                case 'Жизненное равновесие':
+                    return {
+                pane: 'pane__5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,234,126,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Относительная стабильность':
+                    return {
+                pane: 'pane__5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,204,164,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Встревоженность':
+                    return {
+                pane: 'pane__5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(181,167,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Экономическая нестабильность':
+                    return {
+                pane: 'pane__5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,245,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Невозможно составить образ':
+                    return {
+                pane: 'pane__5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,42,138,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane__5');
+        map.getPane('pane__5').style.zIndex = 405;
+        map.getPane('pane__5').style['mix-blend-mode'] = 'normal';
+        var layer__5 = new L.geoJson(json__5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__5',
+            layerName: 'layer__5',
+            pane: 'pane__5',
+            onEachFeature: pop__5,
+            style: style__5_0,
+        });
+        bounds_group.addLayer(layer__5);
+        map.addLayer(layer__5);
+        function pop__6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__6_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__6',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__6');
+        map.getPane('pane__6').style.zIndex = 406;
+        map.getPane('pane__6').style['mix-blend-mode'] = 'normal';
+        var layer__6 = new L.geoJson(json__6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__6',
+            layerName: 'layer__6',
+            pane: 'pane__6',
+            onEachFeature: pop__6,
+            style: style__6_0,
+        });
+        bounds_group.addLayer(layer__6);
+        function pop__7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__7_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.000000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__7',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__7');
+        map.getPane('pane__7').style.zIndex = 407;
+        map.getPane('pane__7').style['mix-blend-mode'] = 'normal';
+        var layer__7 = new L.geoJson(json__7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__7',
+            layerName: 'layer__7',
+            pane: 'pane__7',
+            onEachFeature: pop__7,
+            style: style__7_0,
+        });
+        bounds_group.addLayer(layer__7);
+        function pop__8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__8_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__8',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__8',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__8',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__8');
+        map.getPane('pane__8').style.zIndex = 408;
+        map.getPane('pane__8').style['mix-blend-mode'] = 'normal';
+        var layer__8 = new L.geoJson(json__8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__8',
+            layerName: 'layer__8',
+            pane: 'pane__8',
+            onEachFeature: pop__8,
+            style: style__8_0,
+        });
+        bounds_group.addLayer(layer__8);
+        function pop__9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__9_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__9',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__9',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__9',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__9');
+        map.getPane('pane__9').style.zIndex = 409;
+        map.getPane('pane__9').style['mix-blend-mode'] = 'normal';
+        var layer__9 = new L.geoJson(json__9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__9',
+            layerName: 'layer__9',
+            pane: 'pane__9',
+            onEachFeature: pop__9,
+            style: style__9_0,
+        });
+        bounds_group.addLayer(layer__9);
+        function pop__10(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__10_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__10',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__10',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__10',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__10');
+        map.getPane('pane__10').style.zIndex = 410;
+        map.getPane('pane__10').style['mix-blend-mode'] = 'normal';
+        var layer__10 = new L.geoJson(json__10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__10',
+            layerName: 'layer__10',
+            pane: 'pane__10',
+            onEachFeature: pop__10,
+            style: style__10_0,
+        });
+        bounds_group.addLayer(layer__10);
+        function pop__11(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['image'] !== null ? autolinker.link(feature.properties['image'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count_new_feb_count'] !== null ? autolinker.link(feature.properties['count_new_feb_count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__11_0(feature) {
+            switch(String(feature.properties['image'])) {
+                case 'Жизненное равновесие':
+                    return {
+                pane: 'pane__11',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,234,126,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Относительная стабильность':
+                    return {
+                pane: 'pane__11',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,204,164,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Встревоженность':
+                    return {
+                pane: 'pane__11',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(181,167,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Невозможно составить образ':
+                    return {
+                pane: 'pane__11',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,42,138,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane__11');
+        map.getPane('pane__11').style.zIndex = 411;
+        map.getPane('pane__11').style['mix-blend-mode'] = 'normal';
+        var layer__11 = new L.geoJson(json__11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__11',
+            layerName: 'layer__11',
+            pane: 'pane__11',
+            onEachFeature: pop__11,
+            style: style__11_0,
+        });
+        bounds_group.addLayer(layer__11);
+        function pop__12(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__12_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__12',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__12',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= -1.000000 ) {
+                return {
+                pane: 'pane__12',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__12',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__12',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__12');
+        map.getPane('pane__12').style.zIndex = 412;
+        map.getPane('pane__12').style['mix-blend-mode'] = 'normal';
+        var layer__12 = new L.geoJson(json__12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__12',
+            layerName: 'layer__12',
+            pane: 'pane__12',
+            onEachFeature: pop__12,
+            style: style__12_0,
+        });
+        bounds_group.addLayer(layer__12);
+        function pop__13(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__13_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__13',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__13',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__13',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__13',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__13',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__13');
+        map.getPane('pane__13').style.zIndex = 413;
+        map.getPane('pane__13').style['mix-blend-mode'] = 'normal';
+        var layer__13 = new L.geoJson(json__13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__13',
+            layerName: 'layer__13',
+            pane: 'pane__13',
+            onEachFeature: pop__13,
+            style: style__13_0,
+        });
+        bounds_group.addLayer(layer__13);
+        function pop__14(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__14_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__14',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__14',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__14',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__14',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__14',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__14');
+        map.getPane('pane__14').style.zIndex = 414;
+        map.getPane('pane__14').style['mix-blend-mode'] = 'normal';
+        var layer__14 = new L.geoJson(json__14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__14',
+            layerName: 'layer__14',
+            pane: 'pane__14',
+            onEachFeature: pop__14,
+            style: style__14_0,
+        });
+        bounds_group.addLayer(layer__14);
+        function pop__15(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__15_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__15',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__15',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__15',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__15',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__15',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__15');
+        map.getPane('pane__15').style.zIndex = 415;
+        map.getPane('pane__15').style['mix-blend-mode'] = 'normal';
+        var layer__15 = new L.geoJson(json__15, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__15',
+            layerName: 'layer__15',
+            pane: 'pane__15',
+            onEachFeature: pop__15,
+            style: style__15_0,
+        });
+        bounds_group.addLayer(layer__15);
+        function pop__16(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__16_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__16',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__16',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__16',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__16',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__16',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__16');
+        map.getPane('pane__16').style.zIndex = 416;
+        map.getPane('pane__16').style['mix-blend-mode'] = 'normal';
+        var layer__16 = new L.geoJson(json__16, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__16',
+            layerName: 'layer__16',
+            pane: 'pane__16',
+            onEachFeature: pop__16,
+            style: style__16_0,
+        });
+        bounds_group.addLayer(layer__16);
+        function pop__17(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['image'] !== null ? autolinker.link(feature.properties['image'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count_new_jan_count'] !== null ? autolinker.link(feature.properties['count_new_jan_count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__17_0(feature) {
+            switch(String(feature.properties['image'])) {
+                case 'Жизненное равновесие':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,234,126,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Относительная стабильность':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,204,164,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Встревоженность':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(181,167,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Политическая нестабильность':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,64,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Экономическая нестабильность':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,245,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Нестабильность':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(185,49,75,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Невозможно составить образ':
+                    return {
+                pane: 'pane__17',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,42,138,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane__17');
+        map.getPane('pane__17').style.zIndex = 417;
+        map.getPane('pane__17').style['mix-blend-mode'] = 'normal';
+        var layer__17 = new L.geoJson(json__17, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__17',
+            layerName: 'layer__17',
+            pane: 'pane__17',
+            onEachFeature: pop__17,
+            style: style__17_0,
+        });
+        bounds_group.addLayer(layer__17);
+        function pop__18(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__18_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__18',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__18',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= -1.000000 ) {
+                return {
+                pane: 'pane__18',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__18',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__18',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__18');
+        map.getPane('pane__18').style.zIndex = 418;
+        map.getPane('pane__18').style['mix-blend-mode'] = 'normal';
+        var layer__18 = new L.geoJson(json__18, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__18',
+            layerName: 'layer__18',
+            pane: 'pane__18',
+            onEachFeature: pop__18,
+            style: style__18_0,
+        });
+        bounds_group.addLayer(layer__18);
+        function pop__19(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__19_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__19',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__19',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= -1.000000 ) {
+                return {
+                pane: 'pane__19',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__19',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__19',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__19');
+        map.getPane('pane__19').style.zIndex = 419;
+        map.getPane('pane__19').style['mix-blend-mode'] = 'normal';
+        var layer__19 = new L.geoJson(json__19, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__19',
+            layerName: 'layer__19',
+            pane: 'pane__19',
+            onEachFeature: pop__19,
+            style: style__19_0,
+        });
+        bounds_group.addLayer(layer__19);
+        function pop__20(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__20_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__20',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__20',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__20',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__20',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__20');
+        map.getPane('pane__20').style.zIndex = 420;
+        map.getPane('pane__20').style['mix-blend-mode'] = 'normal';
+        var layer__20 = new L.geoJson(json__20, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__20',
+            layerName: 'layer__20',
+            pane: 'pane__20',
+            onEachFeature: pop__20,
+            style: style__20_0,
+        });
+        bounds_group.addLayer(layer__20);
+        function pop__21(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__21_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__21',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__21',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.000000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__21',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__21');
+        map.getPane('pane__21').style.zIndex = 421;
+        map.getPane('pane__21').style['mix-blend-mode'] = 'normal';
+        var layer__21 = new L.geoJson(json__21, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__21',
+            layerName: 'layer__21',
+            pane: 'pane__21',
+            onEachFeature: pop__21,
+            style: style__21_0,
+        });
+        bounds_group.addLayer(layer__21);
+        function pop__22(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">count</th>\
+                        <td class="visible-with-data" id="count">' + (feature.properties['count'] !== null ? autolinker.link(feature.properties['count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_pos</th>\
+                        <td class="visible-with-data" id="mean_pos">' + (feature.properties['mean_pos'] !== null ? autolinker.link(feature.properties['mean_pos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_neg</th>\
+                        <td class="visible-with-data" id="mean_neg">' + (feature.properties['mean_neg'] !== null ? autolinker.link(feature.properties['mean_neg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">mean_mon</th>\
+                        <td class="visible-with-data" id="mean_mon">' + (feature.properties['mean_mon'] !== null ? autolinker.link(feature.properties['mean_mon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__22_0(feature) {
+            if (feature.properties['mean_mon'] >= 0.850000 && feature.properties['mean_mon'] <= 1.000000 ) {
+                return {
+                pane: 'pane__22',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 0.350000 && feature.properties['mean_mon'] <= 0.850000 ) {
+                return {
+                pane: 'pane__22',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,230,135,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -0.150000 && feature.properties['mean_mon'] <= 0.350000 ) {
+                return {
+                pane: 'pane__22',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= -1.000000 && feature.properties['mean_mon'] <= -0.150000 ) {
+                return {
+                pane: 'pane__22',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['mean_mon'] >= 1.000000 && feature.properties['mean_mon'] <= 9.000000 ) {
+                return {
+                pane: 'pane__22',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__22');
+        map.getPane('pane__22').style.zIndex = 422;
+        map.getPane('pane__22').style['mix-blend-mode'] = 'normal';
+        var layer__22 = new L.geoJson(json__22, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__22',
+            layerName: 'layer__22',
+            pane: 'pane__22',
+            onEachFeature: pop__22,
+            style: style__22_0,
+        });
+        bounds_group.addLayer(layer__22);
+        function pop__23(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name_ru'] !== null ? autolinker.link(feature.properties['name_ru'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['image'] !== null ? autolinker.link(feature.properties['image'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count_new_dec_count'] !== null ? autolinker.link(feature.properties['count_new_dec_count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style__23_0(feature) {
+            switch(String(feature.properties['image'])) {
+                case 'Жизненное равновесие':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,234,126,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Относительная стабильность':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,204,164,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Встревоженность':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(181,167,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Политическая нестабильность':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,64,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Экономическая нестабильность':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,245,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Невозможно составить образ':
+                    return {
+                pane: 'pane__23',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,42,138,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane__23');
+        map.getPane('pane__23').style.zIndex = 423;
+        map.getPane('pane__23').style['mix-blend-mode'] = 'normal';
+        var layer__23 = new L.geoJson(json__23, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__23',
+            layerName: 'layer__23',
+            pane: 'pane__23',
+            onEachFeature: pop__23,
+            style: style__23_0,
+        });
+        bounds_group.addLayer(layer__23);
+        function pop_city_for_map_24(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['label'] !== null ? autolinker.link(feature.properties['label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_city_for_map_24_0() {
+            return {
+                pane: 'pane_city_for_map_24',
+                radius: 3.0,
+                opacity: 1,
+                color: 'rgba(126,126,126,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,234,234,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_city_for_map_24');
+        map.getPane('pane_city_for_map_24').style.zIndex = 424;
+        map.getPane('pane_city_for_map_24').style['mix-blend-mode'] = 'normal';
+        var layer_city_for_map_24 = new L.geoJson(json_city_for_map_24, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_city_for_map_24',
+            layerName: 'layer_city_for_map_24',
+            pane: 'pane_city_for_map_24',
+            onEachFeature: pop_city_for_map_24,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_city_for_map_24_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_city_for_map_24);
+        map.addLayer(layer_city_for_map_24);
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: '<img src="legend/city_for_map_24.png" /> Города', layer: layer_city_for_map_24},
+            {label: 'Образы регионов за декабрь<br /><table><tr><td style="text-align: center;"><img src="legend/_23_Жизненноеравновесие0.png" /></td><td>Жизненное равновесие</td></tr><tr><td style="text-align: center;"><img src="legend/_23_Относительнаястабильность1.png" /></td><td>Относительная стабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_23_Встревоженность2.png" /></td><td>Встревоженность</td></tr><tr><td style="text-align: center;"><img src="legend/_23_Политическаянестабильность3.png" /></td><td>Политическая нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_23_Экономическаянестабильность4.png" /></td><td>Экономическая нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_23_Невозможносоставитьобраз5.png" /></td><td>Невозможно составить образ</td></tr></table>', layer: layer__23},
+            {label: 'Тональность новостей по тегу "Происшествия" в декабре<br /><table><tr><td style="text-align: center;"><img src="legend/_22_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_22_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_22_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_22_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_22_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__22},
+            {label: 'Тональность новостей по тегу "Общество" в декабре<br /><table><tr><td style="text-align: center;"><img src="legend/_21_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_21_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_21_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr></table>', layer: layer__21},
+            {label: 'Тональность новостей по тегу "Политика" в декабре<br /><table><tr><td style="text-align: center;"><img src="legend/_20_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_20_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_20_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_20_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_20_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__20},
+            {label: 'Тональность новостей по тегу "Спорт" в декабре<br /><table><tr><td style="text-align: center;"><img src="legend/_19_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_19_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_19_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_19_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_19_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__19},
+            {label: 'Тональность новостей по тегу "Экономика" в декабре<br /><table><tr><td style="text-align: center;"><img src="legend/_18_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_18_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_18_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_18_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_18_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__18},
+            {label: 'Образы регионов за январь<br /><table><tr><td style="text-align: center;"><img src="legend/_17_Жизненноеравновесие0.png" /></td><td>Жизненное равновесие</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Относительнаястабильность1.png" /></td><td>Относительная стабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Встревоженность2.png" /></td><td>Встревоженность</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Политическаянестабильность3.png" /></td><td>Политическая нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Экономическаянестабильность4.png" /></td><td>Экономическая нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Нестабильность5.png" /></td><td>Нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_17_Невозможносоставитьобраз6.png" /></td><td>Невозможно составить образ</td></tr></table>', layer: layer__17},
+            {label: 'Тональность новостей по тегу "Общество" в январе<br /><table><tr><td style="text-align: center;"><img src="legend/_16_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_16_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_16_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_16_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_16_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__16},
+            {label: 'Тональность новостей по тегу "Политика" в январе<br /><table><tr><td style="text-align: center;"><img src="legend/_15_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_15_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_15_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_15_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_15_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__15},
+            {label: 'Тональность новостей по тегу "Происшествия" в январе<br /><table><tr><td style="text-align: center;"><img src="legend/_14_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_14_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_14_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_14_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_14_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__14},
+            {label: 'Тональность новостей по тегу "Экономика" в январе<br /><table><tr><td style="text-align: center;"><img src="legend/_13_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_13_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_13_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_13_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_13_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__13},
+            {label: 'Тональность новостей по тегу "Спорт" в январе<br /><table><tr><td style="text-align: center;"><img src="legend/_12_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_12_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_12_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_12_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_12_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__12},
+            {label: 'Образы регионов за февраль<br /><table><tr><td style="text-align: center;"><img src="legend/_11_Жизненноеравновесие0.png" /></td><td>Жизненное равновесие</td></tr><tr><td style="text-align: center;"><img src="legend/_11_Относительнаястабильность1.png" /></td><td>Относительная стабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_11_Встревоженность2.png" /></td><td>Встревоженность</td></tr><tr><td style="text-align: center;"><img src="legend/_11_Невозможносоставитьобраз3.png" /></td><td>Невозможно составить образ</td></tr></table>', layer: layer__11},
+            {label: 'Тональность новостей по тегу "Происшествия" в феврале<br /><table><tr><td style="text-align: center;"><img src="legend/_10_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_10_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_10_Нетданных2.png" /></td><td>Нет данных</td></tr></table>', layer: layer__10},
+            {label: 'Тональность новостей по тегу "Политика" в феврале<br /><table><tr><td style="text-align: center;"><img src="legend/_9_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_9_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_9_Нетданных2.png" /></td><td>Нет данных</td></tr></table>', layer: layer__9},
+            {label: 'Тональность новостей по тегу "Общество" в феврале<br /><table><tr><td style="text-align: center;"><img src="legend/_8_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_8_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_8_Нетданных2.png" /></td><td>Нет данных</td></tr></table>', layer: layer__8},
+            {label: 'Тональность новостей по тегу "Экономика" в феврале<br /><table><tr><td style="text-align: center;"><img src="legend/_7_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_7_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_7_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_7_Нетданных3.png" /></td><td>Нет данных</td></tr></table>', layer: layer__7},
+            {label: 'Тональность новостей по тегу "Спорт" в феврале<br /><table><tr><td style="text-align: center;"><img src="legend/_6_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_6_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_6_Нетданных2.png" /></td><td>Нет данных</td></tr></table>', layer: layer__6},
+            {label: 'Образы регионов за март<br /><table><tr><td style="text-align: center;"><img src="legend/_5_Жизненноеравновесие0.png" /></td><td>Жизненное равновесие</td></tr><tr><td style="text-align: center;"><img src="legend/_5_Относительнаястабильность1.png" /></td><td>Относительная стабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_5_Встревоженность2.png" /></td><td>Встревоженность</td></tr><tr><td style="text-align: center;"><img src="legend/_5_Экономическаянестабильность3.png" /></td><td>Экономическая нестабильность</td></tr><tr><td style="text-align: center;"><img src="legend/_5_Невозможносоставитьобраз4.png" /></td><td>Невозможно составить образ</td></tr></table>', layer: layer__5},
+            {label: 'Тональность новостей по тегу "Происшествия" в марте<br /><table><tr><td style="text-align: center;"><img src="legend/_4_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_4_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_4_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_4_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_4_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__4},
+            {label: 'Тональность новостей по тегу "Политика" в марте<br /><table><tr><td style="text-align: center;"><img src="legend/_3_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_3_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_3_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_3_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_3_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__3},
+            {label: 'Тональность новостей по тегу "Общество" в марте<br /><table><tr><td style="text-align: center;"><img src="legend/_2_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_2_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_2_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_2_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_2_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__2},
+            {label: 'Тональность новостей по тегу "Экономика" в марте<br /><table><tr><td style="text-align: center;"><img src="legend/_1_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_1_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_1_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_1_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_1_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__1},
+            {label: 'Тональность новостей по тегу "Спорт" в марте<br /><table><tr><td style="text-align: center;"><img src="legend/_0_Позитивная0.png" /></td><td>Позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_0_Скореепозитивная1.png" /></td><td>Скорее позитивная</td></tr><tr><td style="text-align: center;"><img src="legend/_0_Скореенегативная2.png" /></td><td>Скорее негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_0_Негативная3.png" /></td><td>Негативная</td></tr><tr><td style="text-align: center;"><img src="legend/_0_Нетданных4.png" /></td><td>Нет данных</td></tr></table>', layer: layer__0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        resetLabels([layer_city_for_map_24]);
+        map.on("zoomend", function(){
+            resetLabels([layer_city_for_map_24]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_city_for_map_24]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_city_for_map_24]);
+        });
+        </script>
+    </body>
+</html>
